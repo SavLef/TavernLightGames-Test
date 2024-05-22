@@ -4,11 +4,10 @@ Window
   pos: 0 0
   !text: tr('Jump Window')
   draggable: false
-  @onEscape: self:destroy();
+  @onEscape: terminate();
   
   Button
     id: jumpButton
     size: 50 25
     !text: tr('Jump!')
     @onClick: onJumpButtonClick()
-    @onEscape: self:destroy();

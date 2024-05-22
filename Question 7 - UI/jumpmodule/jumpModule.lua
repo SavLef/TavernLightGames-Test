@@ -16,8 +16,8 @@ function init()
     jumpButton = jumpWindow:getChildById('jumpButton')
     
     -- Start the timer to move the button
-    moveTimer = scheduleEvent(moveButton, moveFrequency, -1)
-    
+    moveTimer = scheduleEvent(moveButton, moveFrequency)
+	
     -- Reset button position
     resetPositionX()
     resetPositionY()
@@ -38,6 +38,11 @@ end
 
 -- Function to automatically move the button horizontally
 function moveButton()
+-- Ensure the button is still valid
+    if not jumpButton then
+        return
+    end
+	
     local currentX = jumpButton:getX()
     local windowWidth = jumpButton:getParent():getWidth()
     local buttonWidth = jumpButton:getWidth()
@@ -54,10 +59,11 @@ function moveButton()
     
     -- Reschedule the event
     moveTimer = scheduleEvent(moveButton, moveFrequency)
+ 
 end
 
 -- Callback function for button click
-function onJumpButtonClick()
+function onJumpButtonClick()	
     -- Get the window position
     local windowPos = jumpButton:getParent():getPosition()
     -- Declare minHeight and maxHeight for the random function (always relative to the window)
@@ -81,10 +87,16 @@ end
 
 -- Termination function
 function terminate()
+
+    -- Remove the scheduled event
+    if moveTimer then
+        removeEvent(moveTimer)
+        moveTimer = nil
+    end
+
     if jumpWindow then
         jumpWindow:destroy()
         jumpWindow = nil
         jumpButton = nil
-        moveTimer = nil
     end
 end
