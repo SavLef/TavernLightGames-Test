@@ -1,0 +1,9 @@
+Module
+  name: jumpmodule
+  description: A module with a jump button on the UI. This is the answer to question 7.
+  author: Lefkos Savvides
+  website: https://github.com/SavLef
+  sandboxed: true
+  scripts: [jumpmodule]
+  @onLoad: init()
+  @onUnload: terminate()
