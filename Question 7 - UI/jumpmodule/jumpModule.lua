@@ -1,8 +1,6 @@
--- Load required modules
 local jumpWindow = nil
 local jumpButton = nil
 local moveTimer = nil
-local moveDirection = -1
 local movementSpeed = 1
 local moveFrequency = 1
 local startingY = 250
@@ -22,23 +20,20 @@ function init()
     
     -- Reset button position
     resetPositionX()
-	resetPositionY()
+    resetPositionY()
     
-    -- Set click function
-    jumpButton.onClick = onJumpButtonClick
 end
 
 -- Function to reset the button X position
 function resetPositionX()
     local windowPos = jumpButton:getParent():getPosition()
     jumpButton:setX(windowPos.x + startingX)
-	moveDirection = -1
 end
 
 -- Function to reset the button Y position
 function resetPositionY()
     local windowPos = jumpButton:getParent():getPosition()
-	jumpButton:setY(windowPos.y + startingY)
+    jumpButton:setY(windowPos.y + startingY)
 end
 
 -- Function to automatically move the button horizontally
@@ -47,37 +42,38 @@ function moveButton()
     local windowWidth = jumpButton:getParent():getWidth()
     local buttonWidth = jumpButton:getWidth()
     
+    -- Check if the button has reached the left side of the window
     if currentX <= jumpButton:getParent():getX() then
-        moveDirection = 1
-    elseif currentX + buttonWidth >= windowWidth + jumpButton:getParent():getX() then
-        moveDirection = -1
+        -- Call the onclick functionality (Reaching  the left side of the window performs the same logic)
+        onJumpButtonClick()
+    else
+        -- Update the button's position to move towards the left side
+        local newX = currentX - movementSpeed
+        jumpButton:setX(newX)
     end
     
-    local newX = currentX + (movementSpeed * moveDirection)
-    jumpButton:setX(newX)
-    
+    -- Reschedule the event
     moveTimer = scheduleEvent(moveButton, moveFrequency)
 end
 
 -- Callback function for button click
 function onJumpButtonClick()
-
--- Get the windowPos to make relative calculations
+    -- Get the window position
     local windowPos = jumpButton:getParent():getPosition()
--- Declare minHeight and maxHeight for the random function (always relative to the window)
+    -- Declare minHeight and maxHeight for the random function (always relative to the window)
     local minHeight = windowPos.y + startingY - 50
     local maxHeight = windowPos.y + 50
     
     if isJumping then
         resetPositionX()
-		resetPositionY()
+        resetPositionY()
     else
+        -- Calculate a random height within the window
         local randomHeight = math.random(minHeight, maxHeight)
-		
-		-- Set the Y position to the new calculated random height
+        -- Set the button's Y position to the calculated random height
         jumpButton:setY(randomHeight)
-		-- Reset the X position
-		resetPositionX()
+        -- Reset the button's X position
+        resetPositionX()
     end
     
     isJumping = not isJumping
